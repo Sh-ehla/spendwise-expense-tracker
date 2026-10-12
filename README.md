@@ -2,6 +2,10 @@
 
 SpendWise is a personal expense tracking web application built with Python and Flask. It provides a dashboard for recording expenses, reviewing spending patterns, and organizing transactions by category.
 
+## Dashboard Preview
+
+![SpendWise dashboard showing expense summaries, category insights, and recent transactions](screenshots/spendwise-dashboard.jpeg)
+
 ## Features
 
 - **Expense management:** Add, edit, and delete expense records.
