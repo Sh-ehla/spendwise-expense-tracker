@@ -1,0 +1,306 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f4f7ff">
+    <meta name="description" content="SpendWise helps you track expenses and understand your spending habits.">
+
+    <title>SpendWise | Personal Expense Tracker</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <!-- Chart.js renders the spending doughnut chart. -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+</head>
+
+<body>
+    <div class="app-container">
+
+        <!-- Header -->
+        <header class="topbar">
+            <a href="/" class="brand" aria-label="SpendWise home">
+                <span class="brand-icon" aria-hidden="true">
+                    <svg viewBox="0 0 48 48" fill="none">
+                        <rect x="5" y="11" width="38" height="29" rx="8" fill="currentColor"/>
+                        <path d="M12 11V8.5C12 6.6 13.6 5 15.5 5H34"
+                              stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+                        <path d="M31 20H43V31H31C27.9 31 25.5 28.5 25.5 25.5C25.5 22.5 27.9 20 31 20Z"
+                              fill="#FFFFFF"/>
+                        <circle cx="32" cy="25.5" r="2" fill="#4F5DF5"/>
+                    </svg>
+                </span>
+
+                <span class="brand-copy">
+                    <span class="brand-name">Spend<span>Wise</span></span>
+                    <span class="brand-subtitle">Your personal expense tracker</span>
+                </span>
+            </a>
+
+            <nav class="main-nav" aria-label="Main navigation">
+                <a href="#overview" class="nav-link active">
+                    <span aria-hidden="true">⌂</span> Home
+                </a>
+                <a href="#insights" class="nav-link">
+                    <span aria-hidden="true">▥</span> Insights
+                </a>
+                <a href="#about" class="nav-link">
+                    <span aria-hidden="true">ⓘ</span> About
+                </a>
+            </nav>
+
+            <div class="header-date">
+                <span id="current-day">Your finances</span>
+                <strong id="current-date">Spend smarter every day</strong>
+            </div>
+        </header>
+
+        <main>
+            <!-- Welcome -->
+            <section class="welcome" id="overview">
+                <div>
+                    <p class="eyebrow">YOUR MONEY, IN FOCUS</p>
+                    <h1>Know where your money goes<span class="title-period">.</span></h1>
+                    <p class="subtitle">
+                        Track your spending, understand your habits, and stay in control.
+                    </p>
+                </div>
+
+                <div class="welcome-decoration" aria-hidden="true">
+                    <span class="decoration-circle circle-one"></span>
+                    <span class="decoration-circle circle-two"></span>
+                    <span class="decoration-circle circle-three"></span>
+                </div>
+            </section>
+
+            <!-- Summary cards -->
+            <section class="summary-grid" aria-label="Spending overview">
+
+                <article class="summary-card card-blue">
+                    <div class="summary-icon" aria-hidden="true">▣</div>
+                    <div class="summary-content">
+                        <p>Total spending</p>
+                        <h2 id="total-spending">0,00 kr</h2>
+                        <span class="summary-note">Across all recorded expenses</span>
+                    </div>
+                    <span class="card-decoration decoration-blue" aria-hidden="true">↗</span>
+                </article>
+
+                <article class="summary-card card-pink">
+                    <div class="summary-icon" aria-hidden="true">▤</div>
+                    <div class="summary-content">
+                        <p>Recorded expenses</p>
+                        <h2 id="expense-count">0</h2>
+                        <span class="summary-note">Transactions in your tracker</span>
+                    </div>
+                    <span class="card-decoration decoration-pink" aria-hidden="true">▥</span>
+                </article>
+
+                <article class="summary-card card-green">
+                    <div class="summary-icon" aria-hidden="true">◉</div>
+                    <div class="summary-content">
+                        <p>Top category</p>
+                        <h2 id="top-category">—</h2>
+                        <span class="summary-note" id="top-category-total">No spending recorded</span>
+                    </div>
+                    <div class="mini-ring" id="top-category-ring" aria-label="Top category share">
+                        <span id="top-category-share">0%</span>
+                    </div>
+                </article>
+
+                <article class="summary-card card-yellow">
+                    <div class="summary-icon" aria-hidden="true">▦</div>
+                    <div class="summary-content">
+                        <p>This month</p>
+                        <h2 id="monthly-spending">0,00 kr</h2>
+                        <span class="summary-note" id="monthly-label">Current month</span>
+                    </div>
+                    <span class="card-decoration decoration-yellow" aria-hidden="true">▥</span>
+                </article>
+
+            </section>
+
+            <!-- Main dashboard -->
+            <section class="dashboard-grid">
+
+                <!-- Add expense -->
+                <article class="panel expense-panel" id="add-expense">
+                    <div class="panel-heading">
+                        <div class="heading-icon icon-purple" aria-hidden="true">＋</div>
+                        <div>
+                            <h2>Add an expense</h2>
+                            <p>Keep track of your spending</p>
+                        </div>
+                    </div>
+
+                    <form id="expense-form">
+
+                        <div class="form-group">
+                            <label for="amount">
+                                <span class="label-icon" aria-hidden="true">◉</span>
+                                Amount (SEK)
+                            </label>
+                            <input
+                                id="amount"
+                                name="amount"
+                                type="number"
+                                min="0.01"
+                                max="99999999.99"
+                                step="0.01"
+                                placeholder="e.g. 125.50"
+                                required
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="category">
+                                <span class="label-icon" aria-hidden="true">◇</span>
+                                Category
+                            </label>
+
+                            <select id="category" name="category" required>
+                                <option value="">Choose a category</option>
+                                <option value="Food">🍎 Food</option>
+                                <option value="Transport">🚌 Transport</option>
+                                <option value="Shopping">🛍 Shopping</option>
+                                <option value="Bills">📄 Bills</option>
+                                <option value="Entertainment">🎟 Entertainment</option>
+                                <option value="Health">💚 Health</option>
+                                <option value="Other">••• Other</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description">
+                                <span class="label-icon" aria-hidden="true">▤</span>
+                                Description <span class="optional-label">(optional)</span>
+                            </label>
+                            <input
+                                id="description"
+                                name="description"
+                                type="text"
+                                maxlength="255"
+                                placeholder="What did you spend on?"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="expense-date">
+                                <span class="label-icon" aria-hidden="true">▦</span>
+                                Date
+                            </label>
+                            <input
+                                id="expense-date"
+                                name="expense_date"
+                                type="date"
+                                required
+                            >
+                        </div>
+
+                        <button type="submit" id="submit-button" class="primary-button">
+                            <span aria-hidden="true">＋</span>
+                            Add expense
+                        </button>
+
+                        <p id="form-message" role="status" aria-live="polite"></p>
+                    </form>
+                </article>
+
+                <!-- Spending insights -->
+                <div class="right-column">
+
+                    <article class="panel insights-panel" id="insights">
+                        <div class="panel-heading insights-heading">
+                            <div class="heading-icon icon-purple" aria-hidden="true">◔</div>
+                            <div>
+                                <h2>Spending by category</h2>
+                                <p>See where your money goes</p>
+                            </div>
+                            <!-- <span class="period-label">All time</span> -->
+                             <button type="button" id="chart-period-toggle" class="period-toggle">
+                                All time
+                            </button>
+                        </div>
+
+                        <div class="chart-layout">
+                            <div class="chart-container">
+                                <canvas
+                                    id="spending-chart"
+                                    role="img"
+                                    aria-label="Doughnut chart showing expenses by category"
+                                ></canvas>
+                                <div class="chart-center">
+                                    <strong id="chart-total">0,00 kr</strong>
+                                    <span>Total spending</span>
+                                </div>
+                            </div>
+
+                            <div
+                                id="category-chart-legend"
+                                class="category-legend"
+                                aria-live="polite"
+                            >
+                                <p class="chart-empty">Your category breakdown will appear here.</p>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Recent expenses -->
+                    <article class="panel transactions-panel">
+                        <div class="panel-heading transactions-heading">
+                            <div class="heading-icon icon-purple" aria-hidden="true">◷</div>
+                            <div>
+                                <h2>Recent expenses</h2>
+                                <p>Your latest transactions</p>
+                            </div>
+
+                            <button
+                                type="button"
+                                id="refresh-button"
+                                class="secondary-button"
+                            >
+                                <span aria-hidden="true">↻</span> Refresh
+                            </button>
+                        </div>
+
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Expense</th>
+                                        <th>Category</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="expense-list">
+                                    <tr>
+                                        <td colspan="5" class="empty-state">
+                                            Loading expenses...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+
+                </div>
+            </section>
+
+            <footer id="about">
+                <div class="footer-brand">Spend<span>Wise</span></div>
+                <p>Built with Python, Flask, SQLite and JavaScript.</p>
+                <span class="footer-caption">Small steps. Smarter spending.</span>
+            </footer>
+        </main>
+    </div>
+</body>
+</html>
